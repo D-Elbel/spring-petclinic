@@ -13,9 +13,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
-    # Build the Docker image
+    # Generate a timestamp
+    - name: Generate timestamp
+      id: timestamp
+      run: echo "::set-output name=ts::$(date +%s)"
+      
+    # Build the Docker image with a lowercase tag using the generated timestamp
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:$(date +%s)
+      run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:${{ steps.timestamp.outputs.ts }}
       
     # Log in to the GitHub Container Registry
     - name: Log in to GitHub Container Registry
@@ -25,6 +30,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
         
-    # Push the Docker image to GitHub Container Registry
+    # Push the Docker image to GitHub Container Registry using the same timestamp
     - name: Push the Docker image
-      run: docker push ghcr.io/d-elbel/depetclinic:$(date +%s)
+      run: docker push ghcr.io/d-elbel/depetclinic:${{ steps.timestamp.outputs.ts }}
