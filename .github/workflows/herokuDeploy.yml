@@ -1,39 +1,18 @@
-name: Deploy to Heroku
+name: Deploy
 
 on:
   push:
     branches:
-      - main # Set this to the branch you want to deploy from
+      - master
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
+      - uses: akhileshns/heroku-deploy@v3.13.15 # This is the action
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Pull Docker Image
-        run: docker pull ghcr.io/d-elbel/depetclinic:1710854952
-
-      - name: Login to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12 # This action simplifies the deployment process to Heroku
-        with:
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: "petclinic"
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: "petclinic" #Must be unique in Heroku
           heroku_email: "elbeldarragh@gmail.com"
           usedocker: true
-
-      - name: Deploy to Heroku
-        run: |
-          docker tag ghcr.io/d-elbel/depetclinic:1710854952 registry.heroku.com/petclinic/web
-          docker push registry.heroku.com/petclinic/web
-          heroku container:release web --app petclinic
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
