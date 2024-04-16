@@ -32,4 +32,4 @@ jobs:
         
     # Push the Docker image to GitHub Container Registry using the same timestamp
     - name: Push the Docker image
-      run: docker push ghcr.io/d-elbel/depetclinic:${{ steps.timestamp.outputs.ts }}
+      run: docker push ghcr.io/d-elbel/depetclinic:latest
