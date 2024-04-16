@@ -20,7 +20,7 @@ jobs:
       
     # Build the Docker image with a lowercase tag using the generated timestamp
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:${{ steps.timestamp.outputs.ts }}
+      run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:latest
       
     # Log in to the GitHub Container Registry
     - name: Log in to GitHub Container Registry
