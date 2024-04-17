@@ -39,4 +39,4 @@ jobs:
 
       - name: Launch new Fargate task
         run: |
-          aws ecs run-task --cluster ${{ secrets.CLUSTER_NAME }} --task-definition ${{ secrets.TASK_DEFINITION_ARN }}
+          aws ecs run-task --cluster ${{ secrets.CLUSTER_NAME }} --task-definition ${{ secrets.TASK_DEFINITION_ARN }} --network-configuration 'awsvpcConfiguration={subnets=[subnet-0ef2bc1ee2d724800, subnet-021d055dfbea1d814, subnet-031158147fe1e8735],securityGroups=[sg-06e1a44394942e4d0],assignPublicIp=ENABLED,vpcId=vpc-0d05b661cde15f2ff}'
