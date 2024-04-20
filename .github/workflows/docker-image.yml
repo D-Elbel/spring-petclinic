@@ -2,34 +2,35 @@ name: Docker Image CI
 
 on:
   workflow_run:
-    workflows: ["Java CI with Maven"]
+    workflows: ["Maven Build and Test"]
     types:
       - completed
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} # Ensures Maven Build and Test was successful
 
     steps:
-    - uses: actions/checkout@v3
-    
-    # Generate a timestamp
-    - name: Generate timestamp
-      id: timestamp
-      run: echo "::set-output name=ts::$(date +%s)"
-      
-    # Build the Docker image with a lowercase tag using the generated timestamp
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:latest
-      
-    # Log in to the GitHub Container Registry
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v1
-      with:
-        registry: ghcr.io
-        username: ${{ github.actor }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-        
-    # Push the Docker image to GitHub Container Registry using the same timestamp
-    - name: Push the Docker image
-      run: docker push ghcr.io/d-elbel/depetclinic:latest
+      - uses: actions/checkout@v3
+
+      # Generate a timestamp
+      - name: Generate timestamp
+        id: timestamp
+        run: echo "::set-output name=ts::$(date +%s)"
+
+      # Build the Docker image with a lowercase tag using the generated timestamp
+      - name: Build the Docker image
+        run: docker build . --file Dockerfile --tag ghcr.io/d-elbel/depetclinic:latest
+
+      # Log in to the GitHub Container Registry
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Push the Docker image to GitHub Container Registry using the same timestamp
+      - name: Push the Docker image
+        run: docker push ghcr.io/d-elbel/depetclinic:latest
